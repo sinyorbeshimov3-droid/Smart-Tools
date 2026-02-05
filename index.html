@@ -1,0 +1,266 @@
+<!DOCTYPE html>  <html lang="uz">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Smart Tools</title>  
+<style>  
+body {  
+  margin: 0;  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+  background: #f4f6f8;  
+  display: flex;  
+  flex-direction: column;  
+  height: 100vh;  
+}  
+.content {  
+  flex: 1;  
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
+  padding: 20px;  
+}  
+.box {  
+  background: #fff;  
+  border-radius: 15px;  
+  padding: 25px;  
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);  
+  min-width: 280px;  
+  width: 100%;  
+  max-width: 400px;  
+  text-align: center;  
+  display: none;  
+}  
+.active {  
+  display: block;  
+}  /* Calculator */
+#calc-display {
+width: 100%;
+font-size: 22px;
+padding: 10px;
+margin-bottom: 15px;
+border-radius: 10px;
+border: 1px solid #ccc;
+text-align: right;
+}
+.calc-buttons {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 10px;
+margin-top: 10px;
+}
+.calc-buttons button {
+padding: 20px;
+font-size: 22px;
+border: none;
+border-radius: 10px;
+cursor: pointer;
+background: #3498db;
+color: white;
+transition: background 0.2s;
+}
+.calc-buttons button:hover {
+background: #2980b9;
+}
+
+/* Clock */
+#clock {
+font-size: 28px;
+font-weight: bold;
+color: #2c3e50;
+}
+
+/* Calendar */
+table {
+width: 100%;
+border-collapse: collapse;
+margin-top: 10px;
+}
+th, td {
+padding: 8px;
+text-align: center;
+border: 1px solid #ddd;
+}
+th {
+background: #3498db;
+color: white;
+border-radius: 5px;
+}
+td.today {
+background: #f39c12;
+color: white;
+border-radius: 50%;
+}
+.calendar-nav {
+display: flex;
+justify-content: space-between;
+margin-bottom: 10px;
+align-items: center;
+}
+.calendar-nav button {
+padding: 5px 10px;
+border: none;
+background: #3498db;
+color: white;
+border-radius: 5px;
+cursor: pointer;
+transition: background 0.2s;
+}
+.calendar-nav button:hover {
+background: #2980b9;
+}
+.month-year {
+font-weight: bold;
+font-size: 18px;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+display: flex;
+justify-content: space-around;
+background: #fff;
+border-top: 1px solid #ccc;
+padding: 10px 0;
+box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+}
+.bottom-nav button {
+background: none;
+border: none;
+font-size: 16px;
+cursor: pointer;
+color: #555;
+transition: color 0.2s;
+}
+.bottom-nav button.active-nav {
+color: #3498db;
+font-weight: bold;
+}
+</style>
+
+</head>  
+<body>  <div class="content">  
+  <!-- Clock -->  
+  <div class="box" id="clock-box">  
+    <h2>Soat</h2>  
+    <div id="clock"></div>  
+  </div>    <!-- Calendar -->    <div class="box" id="calendar-box">  
+    <h2>Kalendar</h2>  
+    <div class="calendar-nav">  
+      <button onclick="changeMonth(-1)">« Oldingi</button>  
+      <div class="month-year" id="monthYear"></div>  
+      <button onclick="changeMonth(1)">Keyingi »</button>  
+    </div>  
+    <div id="calendar"></div>  
+  </div>    <!-- Calculator -->    <div class="box" id="calculator-box">  
+    <h2>Calculator</h2>  
+    <input type="text" id="calc-display" disabled>  
+    <div class="calc-buttons">  
+      <button onclick="appendCalc('1')">1</button>  
+      <button onclick="appendCalc('3')">3</button>  
+      <button onclick="appendCalc('7')">7</button>  
+      <button onclick="appendCalc('+')">+</button>  <button onclick="appendCalc('2')">2</button>  
+  <button onclick="appendCalc('4')">4</button>  
+  <button onclick="appendCalc('8')">8</button>  
+  <button onclick="appendCalc('-')">-</button>  
+
+  <button onclick="appendCalc('3')">3</button>  
+  <button onclick="appendCalc('5')">5</button>  
+  <button onclick="appendCalc('9')">9</button>  
+  <button onclick="appendCalc('/')">÷</button>  
+
+  <button onclick="appendCalc('4')">4</button>  
+  <button onclick="appendCalc('6')">6</button>  
+  <button onclick="appendCalc('0')">0</button>  
+  <button onclick="appendCalc('*')">×</button>  
+
+  <button onclick="clearCalc()" style="grid-column: span 4; background:#e74c3c;">C</button>  
+  <button onclick="calculate()" style="grid-column: span 4; background:#2ecc71;">=</button>  
+</div>
+
+  </div>  
+</div>  <!-- Bottom Navigation -->  <div class="bottom-nav">  
+  <button id="btn-clock" class="active-nav" onclick="showBox('clock')">Soat</button>  
+  <button id="btn-calendar" onclick="showBox('calendar')">Kalendar</button>  
+  <button id="btn-calculator" onclick="showBox('calculator')">Klaviatura</button>  
+</div>  <script>  
+// Calculator  
+function appendCalc(value){  
+  document.getElementById('calc-display').value += value;  
+}  
+function clearCalc(){  
+  document.getElementById('calc-display').value = '';  
+}  
+function calculate(){  
+  const display = document.getElementById('calc-display');  
+  try{  
+    let expression = display.value.replace(/÷/g,'/').replace(/×/g,'*');  
+    display.value = eval(expression);  
+  } catch {  
+    display.value = 'Xato';  
+  }  
+}  
+  
+// Clock  
+function updateClock(){  
+  const now = new Date();  
+  const time = now.toLocaleTimeString();  
+  document.getElementById('clock').textContent = time;  
+}  
+setInterval(updateClock,1000);  
+updateClock();  
+  
+// Calendar  
+let today = new Date();  
+let currentMonth = today.getMonth();  
+let currentYear = today.getFullYear();  
+const monthNames=["Yanvar","Fevral","Mart","Aprel","May","Iyun",  
+                  "Iyul","Avgust","Sentabr","Oktabr","Noyabr","Dekabr"];  
+  
+function generateCalendar(month,year){  
+  const firstDay = new Date(year,month,1).getDay();  
+  const daysInMonth = new Date(year,month+1,0).getDate();  
+  let table = '<table><tr><th>Dush</th><th>Sha</th><th>Chor</th><th>Paysh</th><th>Jum</th><th>Shan</th><th>Yak</th></tr><tr>';  
+  for(let i=0;i<firstDay;i++) table+='<td></td>';  
+  for(let day=1;day<=daysInMonth;day++){  
+    const isToday = day===today.getDate() && month===today.getMonth() && year===today.getFullYear();  
+    table+=`<td${isToday?' class="today"':''}>${day}</td>`;  
+    if((day+firstDay)%7===0) table+='</tr><tr>';  
+  }  
+  table+='</tr></table>';  
+  document.getElementById('calendar').innerHTML = table;  
+  document.getElementById('monthYear').textContent = monthNames[month]+' '+year;  
+}  
+function changeMonth(delta){  
+  currentMonth+=delta;  
+  if(currentMonth<0){currentMonth=11;currentYear--;}  
+  else if(currentMonth>11){currentMonth=0;currentYear++;}  
+  generateCalendar(currentMonth,currentYear);  
+}  
+generateCalendar(currentMonth,currentYear);  
+  
+// Bottom Navigation  
+function showBox(box){  
+  document.getElementById('calculator-box').classList.remove('active');  
+  document.getElementById('calendar-box').classList.remove('active');  
+  document.getElementById('clock-box').classList.remove('active');  
+  
+  document.getElementById('btn-calculator').classList.remove('active-nav');  
+  document.getElementById('btn-calendar').classList.remove('active-nav');  
+  document.getElementById('btn-clock').classList.remove('active-nav');  
+  
+  if(box==='calculator'){  
+    document.getElementById('calculator-box').classList.add('active');  
+    document.getElementById('btn-calculator').classList.add('active-nav');  
+  } else if(box==='calendar'){  
+    document.getElementById('calendar-box').classList.add('active');  
+    document.getElementById('btn-calendar').classList.add('active-nav');  
+  } else if(box==='clock'){  
+    document.getElementById('clock-box').classList.add('active');  
+    document.getElementById('btn-clock').classList.add('active-nav');  
+  }  
+}  
+  
+// Default show clock  
+showBox('clock');  
+  
+</script>  </body>  
+</html>
